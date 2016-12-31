@@ -3,6 +3,7 @@ var ctx;
 var cellSize = 10;
 var spacer = 1;
 var fieldSize = 100;
+var animate = false;
 var GameAction;
 (function (GameAction) {
     GameAction[GameAction["DIE"] = 0] = "DIE";
@@ -221,6 +222,9 @@ function gameLoop() {
     ctx.fillRect(0, 0, 720, 720);
     ctx.closePath();
     renderer.draw(ctx);
+    if (animate) {
+        engine.nextGeneration();
+    }
 }
 function mouseDown(event) {
     var x = event.x;
@@ -237,9 +241,11 @@ function mouseDown(event) {
     }
 }
 function nextGeneration() {
+    animate = false;
     engine.nextGeneration();
 }
 function nextGeneration5() {
+    animate = false;
     for (var i = 0; i < 5; i++) {
         engine.nextGeneration();
     }
@@ -251,6 +257,12 @@ function zoomIn() {
 function zoomOut() {
     cellSize -= 2;
     cellSize = Math.max(2, cellSize);
+}
+function startAnimation() {
+    animate = true;
+}
+function stopAnimation() {
+    animate = false;
 }
 window.onload = function () {
     canvas = document.getElementById('cnvs');

@@ -3,6 +3,7 @@ var ctx: CanvasRenderingContext2D;
 var cellSize: number = 10;
 let spacer: number = 1;
 let fieldSize: number = 100;
+var animate: boolean = false;
 
 enum GameAction {
     DIE,
@@ -275,6 +276,10 @@ function gameLoop(): void {
     ctx.closePath();
 
     renderer.draw(ctx);
+
+    if (animate) {
+        engine.nextGeneration();
+    }
 }
 
 function mouseDown(event: MouseEvent): void {
@@ -296,10 +301,12 @@ function mouseDown(event: MouseEvent): void {
 }
 
 function nextGeneration() {
+     animate = false;
     engine.nextGeneration();
 }
 
 function nextGeneration5() {
+    animate = false;
     for (let i: number = 0; i < 5; i++) {
         engine.nextGeneration();
     }
@@ -313,6 +320,14 @@ function zoomIn() {
 function zoomOut() {
     cellSize -= 2;
     cellSize = Math.max(2, cellSize);
+}
+
+function startAnimation() {
+    animate = true;
+}
+
+function stopAnimation() {
+    animate = false;
 }
 
 window.onload = () => {
