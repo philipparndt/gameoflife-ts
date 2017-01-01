@@ -5,20 +5,30 @@
     body {
         background-color: black;
     }
+    button {
+        background-color: black;
+        border: none;
+        color: white;
+        padding: 10px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
     </style>
     <script src="app.js"></script>
 </head>
 <body>
     <div>
-        <canvas id="cnvs" height="720" width="720"></canvas>
+        <canvas id="cnvs" height="700" width="1000"></canvas>
     </div>
     <div>
-        <button onclick="zoomIn()">zoomIn</button>
-        <button onclick="zoomOut()">zoomOut</button>
-        <button onclick="startAnimation()">startAnimation</button>
-        <button onclick="stopAnimation()">stopAnimation</button>
-        <button onclick="nextGeneration()">nextGeneration</button>
-        <button onclick="nextGeneration5()">+5</button>
+        <button onclick="zoomIn()"><img src="zoom_in.png"/></button>
+        <button onclick="zoomOut()"><img src="zoom_out.png"/></button>
+        <button onclick="startAnimation()"><img src="play.png"/></button>
+        <button onclick="stopAnimation()"><img src="stop.png"/></button>
+        <button onclick="nextGeneration()"><img src="step.png"/></button>
+        <button onclick="nextGeneration5()"><img src="step5.png"/></button>
     </div>
 </body>
 </html>

@@ -2,7 +2,6 @@ var canvas;
 var ctx;
 var cellSize = 10;
 var spacer = 1;
-var fieldSize = 100;
 var animate = false;
 var GameAction;
 (function (GameAction) {
@@ -35,15 +34,17 @@ var Cell = (function () {
     return Cell;
 }());
 var GameField = (function () {
-    function GameField(width, height) {
-        if (width === void 0) { width = fieldSize; }
-        if (height === void 0) { height = fieldSize; }
+    function GameField() {
         this.cells = new Map();
-        this.width = width;
-        this.height = height;
     }
+    GameField.prototype.getWidth = function () {
+        return Math.ceil(canvas.width / cellSize);
+    };
+    GameField.prototype.getHeight = function () {
+        return Math.ceil(canvas.height / cellSize);
+    };
     GameField.prototype.keyForCoordinate = function (x, y) {
-        return x * this.width + y;
+        return x * 100000 + y;
     };
     GameField.prototype.keyForCell = function (cell) {
         return this.keyForCoordinate(cell.x, cell.y);
@@ -105,8 +106,8 @@ var GameEngine = (function () {
     GameEngine.prototype.nextGeneration = function () {
         var toBeCreated = new List();
         var toBeDeleted = new List();
-        for (var x = 0; x < this.field.width; x++) {
-            for (var y = 0; y < this.field.height; y++) {
+        for (var x = 0; x < this.field.getWidth(); x++) {
+            for (var y = 0; y < this.field.getHeight(); y++) {
                 var cell = void 0;
                 var ruleSet = void 0;
                 var cellExists = this.field.isCellAt(x, y);
@@ -155,17 +156,14 @@ var GameFieldRenderer = (function () {
     }
     GameFieldRenderer.prototype.draw = function (ctx) {
         ctx.save();
-        for (var x = 0; x < this.field.width; x++) {
-            for (var y = 0; y < this.field.height; y++) {
+        for (var x = 0; x < this.field.getWidth(); x++) {
+            for (var y = 0; y < this.field.getHeight(); y++) {
                 if (this.field.isCellAt(x, y)) {
                     ctx.fillStyle = "blue";
+                    ctx.beginPath();
+                    ctx.fillRect(x * (cellSize + spacer), y * (cellSize + spacer), cellSize, cellSize);
+                    ctx.closePath();
                 }
-                else {
-                    ctx.fillStyle = "#202020";
-                }
-                ctx.beginPath();
-                ctx.fillRect(x * (cellSize + spacer), y * (cellSize + spacer), cellSize, cellSize);
-                ctx.closePath();
             }
         }
         ctx.restore();
@@ -218,8 +216,8 @@ var renderer = new GameFieldRenderer(engine.field);
 createGospersGliderGun(engine.field);
 function gameLoop() {
     requestAnimationFrame(gameLoop);
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 720, 720);
+    ctx.fillStyle = "#202020";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
     renderer.draw(ctx);
     if (animate) {
@@ -269,4 +267,10 @@ window.onload = function () {
     ctx = canvas.getContext("2d");
     gameLoop();
     canvas.addEventListener("mousedown", mouseDown, false);
+    resizeCanvas();
 };
+// resize the canvas to fill browser window dynamically
+window.addEventListener('resize', resizeCanvas, false);
+function resizeCanvas() {
+    canvas.width = window.innerWidth - 15;
+}
