@@ -1,5 +1,6 @@
 var canvas;
 var ctx;
+var generation;
 var cellSize = 10;
 var spacer = 1;
 var animate = false;
@@ -143,10 +144,16 @@ var GameEngine = (function () {
             var cell = _c[_b];
             this.field.createCell(cell);
         }
+        this.generation++;
+        this.updateGeneration();
     };
     GameEngine.prototype.clear = function () {
         this.field.clear();
         this.generation = 0;
+        this.updateGeneration();
+    };
+    GameEngine.prototype.updateGeneration = function () {
+        generation.innerText = "Generation: " + this.generation;
     };
     return GameEngine;
 }());
@@ -201,6 +208,24 @@ function createGospersGliderGun(field) {
         28, 7, 32, 3, 25, 8, 28, 5, 18, 9, 18, 8, 23, 6, 19, 10,
         18, 7, 29, 5, 29, 7, 29, 6
     ];
+    applyData(data, field);
+}
+function _createBat(field) {
+    var data = [
+        21, 26, 21, 25, 21, 24, 23, 24, 23, 25, 23, 26, 22, 27
+    ];
+    applyData(data, field);
+}
+function _createSpaceship(field) {
+    var data = [
+        2, 3, 3, 3, 4, 3, 5, 3, 1, 4, 1, 6, 5, 4, 5, 5, 4, 6, 1, 12,
+        2, 11, 3, 11, 4, 11, 5, 11, 6, 11, 6, 12, 6, 13, 5, 14,
+        1, 14, 3, 15, 1, 22, 2, 21, 3, 21, 4, 21, 5, 21, 6, 21,
+        7, 21, 7, 22, 7, 23, 6, 24, 4, 25, 3, 25, 1, 24
+    ];
+    applyData(data, field);
+}
+function applyData(data, field) {
     field.clear();
     for (var i = 0; i < data.length; i += 2) {
         var x = data[i];
@@ -248,6 +273,21 @@ function nextGeneration5() {
         engine.nextGeneration();
     }
 }
+function createGliderGun() {
+    engine.clear();
+    createGospersGliderGun(engine.field);
+}
+function createBat() {
+    engine.clear();
+    _createBat(engine.field);
+}
+function createSpaceship() {
+    engine.clear();
+    _createSpaceship(engine.field);
+}
+function clearField() {
+    engine.clear();
+}
 function zoomIn() {
     cellSize += 2;
     cellSize = Math.min(50, cellSize);
@@ -256,15 +296,32 @@ function zoomOut() {
     cellSize -= 2;
     cellSize = Math.max(2, cellSize);
 }
-function startAnimation() {
-    animate = true;
+function toggleAnimation() {
+    animate = !animate;
+    updatePlayImage();
 }
-function stopAnimation() {
-    animate = false;
+function dump() {
+    var result = "";
+    engine.field.cells.forEach(function (cell) {
+        result += cell.x + "," + cell.y + ", ";
+    });
+    generation.innerText = result;
+}
+function updatePlayImage() {
+    var play = document.getElementById('playimage');
+    if (animate) {
+        play.src = "stop.png";
+    }
+    else {
+        play.src = "play.png";
+    }
 }
 window.onload = function () {
     canvas = document.getElementById('cnvs');
     ctx = canvas.getContext("2d");
+    generation = document.getElementById('generation');
+    updatePlayImage();
+    engine.updateGeneration();
     gameLoop();
     canvas.addEventListener("mousedown", mouseDown, false);
     resizeCanvas();

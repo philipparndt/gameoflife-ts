@@ -1,8 +1,10 @@
 var canvas: HTMLCanvasElement;
 var ctx: CanvasRenderingContext2D;
-var cellSize: number = 10;
-let spacer: number = 1;
-var animate: boolean = false;
+var generation: HTMLElement;
+
+var cellSize = 10;
+let spacer = 1;
+var animate = false;
 
 enum GameAction {
     DIE,
@@ -171,11 +173,19 @@ class GameEngine {
         for (let cell of toBeCreated.items) {
             this.field.createCell(cell);
         }
+
+        this.generation++;
+        this.updateGeneration();
     }
 
     clear() {
         this.field.clear();
         this.generation = 0;
+        this.updateGeneration();
+    }
+
+    updateGeneration() {
+        generation.innerText = "Generation: " + this.generation;
     }
 }
 
@@ -243,6 +253,29 @@ function createGospersGliderGun(field: GameField) {
             18,7, 29,5, 29,7, 29,6
         ];
     
+    applyData(data, field);
+}
+
+function _createBat(field: GameField) {
+        var data: number[] = [
+            21,26, 21,25, 21,24, 23,24, 23,25, 23,26, 22,27
+        ];
+    
+    applyData(data, field);
+}
+
+function _createSpaceship(field: GameField) {
+        var data: number[] = [
+            2,3, 3,3, 4,3, 5,3, 1,4, 1,6, 5,4, 5,5, 4,6, 1,12, 
+            2,11, 3,11, 4,11, 5,11, 6,11, 6,12, 6,13, 5,14, 
+            1,14, 3,15, 1,22, 2,21, 3,21, 4,21, 5,21, 6,21, 
+            7,21, 7,22, 7,23, 6,24, 4,25, 3,25, 1,24
+        ];
+    
+    applyData(data, field);
+}
+
+function applyData(data: number[], field: GameField) {
     field.clear();
 
     for (let i: number = 0; i < data.length; i+=2) {
@@ -307,6 +340,25 @@ function nextGeneration5() {
     }
 }
 
+function createGliderGun() {
+    engine.clear();
+    createGospersGliderGun(engine.field);
+}
+
+function createBat() {
+    engine.clear();
+    _createBat(engine.field);
+}
+
+function createSpaceship() {
+    engine.clear();
+    _createSpaceship(engine.field);
+}
+
+function clearField() {
+    engine.clear();
+}
+
 function zoomIn() {
     cellSize += 2;
     cellSize = Math.min(50, cellSize);
@@ -317,21 +369,43 @@ function zoomOut() {
     cellSize = Math.max(2, cellSize);
 }
 
-function startAnimation() {
-    animate = true;
+function toggleAnimation() {
+    animate = !animate;
+    updatePlayImage();
 }
 
-function stopAnimation() {
-    animate = false;
+function dump() {
+    var result = "";
+    engine.field.cells.forEach(cell => {
+        result += cell.x + "," + cell.y + ", ";
+    });
+
+    generation.innerText = result;
+}
+
+function updatePlayImage() {
+    var play = <HTMLImageElement>document.getElementById('playimage');
+    if (animate) {
+        play.src = "stop.png";
+    }
+    else {
+        play.src = "play.png";
+    }
 }
 
 window.onload = () => {
-   canvas = <HTMLCanvasElement>document.getElementById('cnvs');
-   ctx = canvas.getContext("2d");
-   gameLoop();
+    canvas = <HTMLCanvasElement>document.getElementById('cnvs');
+    ctx = canvas.getContext("2d");
 
-   canvas.addEventListener("mousedown", mouseDown, false);
-   resizeCanvas();
+    generation = document.getElementById('generation');
+
+    updatePlayImage();
+
+    engine.updateGeneration();
+    gameLoop();
+
+    canvas.addEventListener("mousedown", mouseDown, false);
+    resizeCanvas();
 };
 
 // resize the canvas to fill browser window dynamically

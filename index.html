@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Game of Life Kata</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1, shrink-to-fit=no">
     <style>
     body {
         background-color: black;
+        color: white;
+        font-family:verdana, sans-serif;
     }
     button {
         background-color: black;
@@ -23,12 +27,18 @@
         <canvas id="cnvs" height="700" width="1000"></canvas>
     </div>
     <div>
-        <button onclick="zoomIn()"><img src="zoom_in.png"/></button>
-        <button onclick="zoomOut()"><img src="zoom_out.png"/></button>
-        <button onclick="startAnimation()"><img src="play.png"/></button>
-        <button onclick="stopAnimation()"><img src="stop.png"/></button>
-        <button onclick="nextGeneration()"><img src="step.png"/></button>
-        <button onclick="nextGeneration5()"><img src="step5.png"/></button>
+        <button onclick="zoomIn()" title="zoom in"><img src="zoom_in.png"/></button>
+        <button onclick="zoomOut()" title="zoom out"><img src="zoom_out.png"/></button>
+        <button onclick="toggleAnimation()" title="start"><img id="playimage" src="play.png"/></button>
+        <button onclick="nextGeneration()" title="next generation"><img src="step.png"/></button>
+        <button onclick="nextGeneration5()" title="+5 generations"><img src="step5.png"/></button>
+        <button onclick="clearField()" title="clear"><img src="clear.png"/></button>
+        <button onclick="createGliderGun()" title="create gospers glider gun"><img src="glider.png"/></button>
+        <button onclick="createBat()" title="create bat"><img src="bat.png"/></button>
+        <button onclick="createSpaceship()" title="create spaceship"><img src="spaceship.png"/></button>
+
+        <button onclick="dump()">Dump</button>
     </div>
+    <div id="generation"></div>
 </body>
 </html>
